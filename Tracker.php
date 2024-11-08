@@ -16,7 +16,8 @@ class Tracker {
         $worked_seconds = $leaved_at->getTimestamp() - $arrived_at->getTimestamp();
         $required_of = self::REQUIRED_HOUR_DURATION - $worked_seconds;
 
-        $query = "INSERT INTO daily (name, arrived_at, leaved_at, required_of) VALUES (:name, :arrived_at, :leaved_at, :required_of)";
+        $query = "INSERT INTO daily (name, arrived_at, leaved_at, required_of) 
+                  VALUES (:name, :arrived_at, :leaved_at, :required_of)";
         $stmt = $this->pdo->prepare($query);
 
         $stmt->bindParam(':name', $name);
@@ -38,4 +39,12 @@ class Tracker {
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function markAsDone($name) {
+        $query = "UPDATE daily SET required_of = 0 WHERE name = :name";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->execute();
+    }
 }
+?>

@@ -19,11 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'], $_POST['arriv
     }
 }
 
+if (isset($_GET['done'])) {
+    $tracker->markAsDone($_GET['done']);
+    header('Location: index.php');
+    exit;
+}
+
 $records = $tracker->getAllRecords();
 $userRequiredWork = $tracker->calculateRequiredWork();
 ?>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -38,19 +44,19 @@ $userRequiredWork = $tracker->calculateRequiredWork();
         <div class="col">
             <form method="post" class="row g-3 mt-3 align-items-end">
                 <div class="col-auto">
-                    <label for="name">Ismi</label>
+                    <label for="name">Name</label>
                     <input type="text" name="name" class="form-control" id="name">
                 </div>
                 <div class="col-auto">
-                    <label for="arrived_at">Kelgan vaqti</label>
+                    <label for="arrived_at">Arrived At</label>
                     <input type="datetime-local" name="arrived_at" class="form-control" id="arrived_at">
                 </div>
                 <div class="col-auto">
-                    <label for="leaved_at">Ketgan vaqti</label>
+                    <label for="leaved_at">Leaved At</label>
                     <input type="datetime-local" name="leaved_at" class="form-control" id="leaved_at">
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Yuborish</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
@@ -58,44 +64,47 @@ $userRequiredWork = $tracker->calculateRequiredWork();
 
     <table class="table table-primary table-hover">
         <thead>
-        <tr class="table-secondary">
-            <th scope="col">#</th>
-            <th scope="col">Ism</th>
-            <th scope="col">Kelgan vaqti</th>
-            <th scope="col">Ketgan vaqti</th>
-            <th scope="col">Ishlash kerak</th>
-        </tr>
+            <tr class="table-secondary">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Arrived At</th>
+                <th scope="col">Leaved At</th>
+                <th scope="col">Required Work</th>
+            </tr>
         </thead>
         <tbody>
-        <?php foreach ($records as $record): ?>
-            <tr>
-                <td><?= $record['id'] ?></td>
-                <td><?= htmlspecialchars($record['name']) ?></td>
-                <td><?= $record['arrived_at'] ?></td>
-                <td><?= $record['leaved_at'] ?></td>
-                <td><?= gmdate('H:i', $record['required_of']) ?></td>
-            </tr>
-        <?php endforeach; ?>
+            <?php foreach ($records as $record): ?>
+                <tr>
+                    <td><?= $record['id'] ?></td>
+                    <td><?= htmlspecialchars($record['name']) ?></td>
+                    <td><?= $record['arrived_at'] ?></td>
+                    <td><?= $record['leaved_at'] ?></td>
+                    <td><?= gmdate('H:i', $record['required_of']) ?></td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 
-    <h2 class="text-primary text-center">Umumiy Ishlash Kerak</h2>
+    <h2 class="text-primary text-center">User Work Debt</h2>
     <table class="table table-secondary table-hover">
         <thead>
-        <tr>
-            <th scope="col">Ism</th>
-            <th scope="col">Umumiy Ishlash kerak (soat:minut)</th>
-        </tr>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Work Debt</th>
+                <th scope="col">Work Status </th>
+            </tr>
         </thead>
         <tbody>
-        <?php foreach ($userRequiredWork as $user): ?>
-            <tr>
-                <td><?= htmlspecialchars($user['name']) ?></td>
-                <td><?= gmdate('H:i', $user['total_required_of']) ?></td>
-            </tr>
-        <?php endforeach; ?>
+            <?php foreach ($userRequiredWork as $user): ?>
+                <tr>
+                    <td><?= htmlspecialchars($user['name']) ?></td>
+                    <td><?= gmdate('H:i', $user['total_required_of']) ?></td>
+                    <td><a href="index.php?done=<?= urlencode($user['name']) ?>" class="btn btn-success">Done</a></td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 </div>
 </body>
 </html>
+
