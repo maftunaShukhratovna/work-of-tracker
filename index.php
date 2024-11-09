@@ -1,9 +1,5 @@
 <?php
-require 'DB.php';
 require 'Tracker.php';
-
-$db = new DB();
-$pdo = $db->getPDO();
 
 $tracker = new Tracker($pdo);
 
@@ -29,6 +25,9 @@ $records = $tracker->getAllRecords();
 $userRequiredWork = $tracker->calculateRequiredWork();
 ?>
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,7 +41,7 @@ $userRequiredWork = $tracker->calculateRequiredWork();
     <h1 class="text-primary text-center">Work Of Tracker</h1>
     <div class="row align-items-end my-3">
         <div class="col">
-            <form method="post" class="row g-3 mt-3 align-items-end">
+            <form method="post" id="main" class="row g-3 mt-3 align-items-end">
                 <div class="col-auto">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control" id="name">
@@ -56,8 +55,15 @@ $userRequiredWork = $tracker->calculateRequiredWork();
                     <input type="datetime-local" name="leaved_at" class="form-control" id="leaved_at">
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button form="main" type="submit" class="btn btn-primary">Submit</button>
                 </div>
+                <div class="col-auto">
+                    <button form="export" type="submit" class="btn btn-success">Export</button>
+                </div>
+            </form>
+            
+            <form action="download.php" id="export" method="post">
+                <input type="text" name="export" value="true" hidden="">
             </form>
         </div>
     </div>

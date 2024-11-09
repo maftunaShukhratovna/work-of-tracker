@@ -1,4 +1,7 @@
 <?php
+require 'DB.php';
+$db=new DB();
+$pdo= $db->getPDO();
 
 class Tracker {
     private $pdo;
