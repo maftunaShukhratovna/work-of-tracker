@@ -49,5 +49,24 @@ class Tracker {
         $stmt->bindParam(':name', $name);
         $stmt->execute();
     }
+
+    public function getWorkDayListwithPagination(int $offset){
+        $offset=$offset?($offset*10)-10:0;
+        $query="SELECT * FROM daily ORDER BY arrived_at DESC 10 OFFSET ".$offset;
+        $stmt = $this->pdo->query($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalRecords(){
+        $query="SELECT COUNT(id) as pageCount FROM daily";
+        $stmt= $this->pdo->query($query);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function calculatePageCount(){
+        $total=$this->getTotalRecords()['pageCount'];
+        return ceil($total/10);
+    }
 }
 ?>

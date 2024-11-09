@@ -3,7 +3,7 @@ if (isset($_POST['export'])) {
     require 'Tracker.php';
 
     $workday = new Tracker ($pdo);
-    $records = $workday->getAllRecords();
+    $recordsinfo = $workday->getAllRecords();
 
     $filename = 'Daily.csv';
 
@@ -19,14 +19,16 @@ if (isset($_POST['export'])) {
 
     $columns = ['#', 'Ism', 'Kelgan', 'Ketgan', 'Qarzdorlik'];
     fputcsv($output, $columns);
+
+
     $i = 0;
 
     
-    foreach($records as $record){
+    foreach($recordsinfo as $recordinfo){
         $i++;
-        $record['required_of']=gmdate('H:i',$record['required_of']);
-        $record['id']=$i;
-        fputcsv($output,$record);
+        $recordinfo['required_of']=gmdate('H:i',$recordinfo['required_of']);
+        $recordinfo['id']=$i;
+        fputcsv($output,$recordinfo);
     }
     
     fclose($output);
